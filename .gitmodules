@@ -1,3 +1,6 @@
 [submodule "snarkjs-bellman-adapter"]
 	path = snarkjs-bellman-adapter
 	url = https://github.com/ZK-Space/snarkjs-bellman-adapter
+[submodule "librustzcash"]
+	path = librustzcash
+	url = https://github.com/codecuisine/librustzcash.git

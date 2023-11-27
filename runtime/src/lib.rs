@@ -10,7 +10,7 @@ use pallet_grandpa::AuthorityId as GrandpaId;
 use sp_api::impl_runtime_apis;
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_core::{crypto::KeyTypeId, OpaqueMetadata};
-use sp_runtime::{
+fuse sp_runtime::{
 	create_runtime_str, generic, impl_opaque_keys,
 	traits::{
 		AccountIdLookup, BlakeTwo256, Block as BlockT, IdentifyAccount, NumberFor, One, Verify,
@@ -278,6 +278,25 @@ impl pallet_sudo::Config for Runtime {
 
 impl pallet_insecure_randomness_collective_flip::Config for Runtime {}
 
+/// Configure the pallet-sapling-verifier in pallets/sapling-verifier.
+impl pallet_sapling_verifier::Config for Runtime {
+    // The Balances pallet implements the ReservableCurrency trait.
+    // `Balances` is defined in `construct_runtime!` macro.
+    type Currency = Balances;
+
+    // Set ReservationFee to a value.
+    type ReservationFee = ConstU128<100>;
+
+    // Configure the FRAME System Root origin as the Nick pallet admin.
+    // https://paritytech.github.io/substrate/master/frame_system/enum.RawOrigin.html#variant.Root
+    type ForceOrigin = frame_system::EnsureRoot<AccountId>;
+
+    type RuntimeEvent = RuntimeEvent;
+    // (TODO: present in the new node template)
+    //type WeightInfo = pallet_template::weights::SubstrateWeight<Runtime>;
+
+}
+
 /// Configure the pallet-verifier in pallets/verifier.
 impl pallet_verifier::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
@@ -317,6 +336,10 @@ construct_runtime!(
 		InsecureRandomnessCollectiveFlip: pallet_insecure_randomness_collective_flip,
 		// Include the custom logic from the pallet-verifier in the runtime.
 		Verifier: pallet_verifier,
+
+	    // Include the custom logic from the pallet-sapling-verifier in the runtime.
+		Verifier: pallet_sapling_verifier,
+
 	}
 );
 
@@ -556,7 +579,7 @@ impl_runtime_apis! {
 		}
 
 		fn dispatch_benchmark(
-			config: frame_benchmarking::BenchmarkConfig
+v			config: frame_benchmarking::BenchmarkConfig
 		) -> Result<Vec<frame_benchmarking::BenchmarkBatch>, sp_runtime::RuntimeString> {
 			use frame_benchmarking::{baseline, Benchmarking, BenchmarkBatch};
 			use sp_storage::TrackedStorageKey;
