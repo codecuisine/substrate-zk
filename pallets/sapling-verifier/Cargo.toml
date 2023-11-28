@@ -27,7 +27,9 @@ pairing = { version = "0.22", default-features = false }
 bls12_381 = {version = "0.7" }
 
 #sapling support
-zcash_primitives= { path "../../../librustzcash/", default-features = false}
+#zcash_primitives = { path = "../../../librustzcash/zcash_primitives", default-features = false}
+zcash_primitives = { git = "https://github.com/codecuisine/librustzcash.git", default-features = false}
+
 # log
 log = "0.4.17"
 
